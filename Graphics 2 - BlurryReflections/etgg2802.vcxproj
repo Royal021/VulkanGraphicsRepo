@@ -112,8 +112,8 @@
     </CopyFileToFolders>
   </ItemGroup>
   <ItemGroup>
-    <None Include="shaders\blit.frag" />
-    <None Include="shaders\blit.vert" />
+    <None Include="shaders\copyReflections.frag" />
+    <None Include="shaders\copyReflections.vert" />
     <None Include="shaders\main.frag" />
     <None Include="shaders\main.vert" />
     <None Include="shaders\sky.frag" />

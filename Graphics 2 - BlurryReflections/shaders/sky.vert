@@ -27,6 +27,7 @@ void main(){
     vec4 k = vec4(p,1.0);
     k = k * viewProjMatrix;
     k.z = k.w;
+    v_worldpos = p;
     gl_Position = k;
     v_texcoord = texcoord;
     v_normal = normal;

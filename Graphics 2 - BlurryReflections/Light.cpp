@@ -75,6 +75,6 @@ void LightCollection::setUniforms(Uniforms* uniforms)
     uniforms->set("lightColorAndIntensity", this->lightColorAndIntensity);
     uniforms->set("cosSpotAngles", this->cosSpotAngles);
     uniforms->set("spotDirection", this->spotDirection);
-    uniforms->set("attenuation", vec3(150,0.0,0.15));
+    uniforms->set("attenuation", vec3(250,0.0,0.25));
 }
 

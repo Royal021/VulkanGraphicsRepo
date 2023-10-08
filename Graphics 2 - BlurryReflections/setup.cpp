@@ -1,8 +1,8 @@
 #include "vkhelpers.h"
 #include "Globals.h"
 #include "ShaderManager.h"
-#include "BlitSquare.h"
 #include "importantConstants.h"
+#include "BlitSquare.h"
 #include "Uniforms.h"
 #include "ImageManager.h"
 #include "gltf.h"
@@ -16,8 +16,9 @@ void setup(Globals& globs)
     globs.keepLooping = true;
     globs.framebuffer = new Framebuffer();
     globs.offscreen = new Framebuffer(
-        globs.width, globs.height, 1, VK_FORMAT_R8G8B8A8_UNORM, "fbo");
-
+        globs.width, globs.height, 1,
+        VK_FORMAT_R8G8B8A8_UNORM, "fbo");
+   
     globs.vertexManager = new VertexManager(
         globs.ctx,
         {
@@ -45,8 +46,6 @@ void setup(Globals& globs)
         }
     );
     
-    globs.blitSquare = new BlitSquare(globs.vertexManager);
-
     globs.pipelineLayout = new PipelineLayout(
         globs.ctx,
         globs.pushConstants,
@@ -58,15 +57,6 @@ void setup(Globals& globs)
         "globs.pipelineLayout"
     );
     
-    globs.blitPipe = (new GraphicsPipeline(
-        globs.ctx, globs.pipelineLayout,
-        globs.vertexManager->layout,
-        globs.framebuffer,
-        "blit pipe"
-    ))
-    ->set(ShaderManager::load("shaders/blit.vert"))
-    ->set(ShaderManager::load("shaders/blit.frag"));
-
     globs.pipeline = (new GraphicsPipeline(
         globs.ctx,
         globs.pipelineLayout,
@@ -81,21 +71,36 @@ void setup(Globals& globs)
         ->set(ShaderManager::load("shaders/sky.vert"))
         ->set(ShaderManager::load("shaders/sky.frag"));
 
+    globs.pipelineForWindow = globs.pipeline->clone(
+        "main pipeline, window"
+    )->set(globs.framebuffer);
+   
+    globs.copyReflectionsToScreen = globs.pipeline->clone(
+        "copyReflectionsToScreen"
+    )->set(globs.framebuffer)
+        ->set(false, false, true, VK_COMPARE_OP_EQUAL, 1,
+            VK_STENCIL_OP_KEEP, VK_STENCIL_OP_KEEP, VK_STENCIL_OP_KEEP)
+        ->set(ShaderManager::load("shaders/copyReflections.vert"))
+        ->set(ShaderManager::load("shaders/copyReflections.frag"));
+
     globs.skyboxMesh = Meshes::getFromGLTF(
         globs.vertexManager,
         gltf::parse("assets/skybox.glb")
     )[0];
 
     globs.floorPipeline1 = globs.pipeline->clone("floor pipeline 1")
+        ->set(globs.framebuffer)
         ->set(VK_BLEND_FACTOR_ZERO, VK_BLEND_FACTOR_ONE)
         ->set(true, true, true, VK_COMPARE_OP_ALWAYS, 1,
             VK_STENCIL_OP_KEEP, VK_STENCIL_OP_KEEP, VK_STENCIL_OP_REPLACE);
 
     globs.reflectedObjectsPipeline = globs.pipeline->clone("reflected")
+        ->set(globs.framebuffer)
         ->set(true, true, true, VK_COMPARE_OP_EQUAL, 1,
             VK_STENCIL_OP_KEEP, VK_STENCIL_OP_KEEP, VK_STENCIL_OP_KEEP);
 
     globs.floorPipeline2 = globs.pipeline->clone("floor pipeline 2")
+        ->set(globs.framebuffer)
         ->set(VK_BLEND_FACTOR_SRC_ALPHA, VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA)
         ->set(false, false, true, VK_COMPARE_OP_EQUAL, 1,
             VK_STENCIL_OP_KEEP, VK_STENCIL_OP_KEEP, VK_STENCIL_OP_KEEP);
@@ -108,6 +113,8 @@ void setup(Globals& globs)
         globs.pipelineLayout
     );
     
+    globs.blitSquare = new BlitSquare(globs.vertexManager);
+
     globs.descriptorSet = globs.descriptorSetFactory->make();
     
     globs.uniforms = new Uniforms(globs.ctx, "shaders/uniforms.txt");
@@ -131,7 +138,7 @@ void setup(Globals& globs)
         "assets/nebula1_5.jpg"
         });
 
-    gltf::GLTFScene scene = gltf::parse("assets/room.glb");
+    gltf::GLTFScene scene = gltf::parse("assets/kitchen.glb");
     globs.allLights = new LightCollection(scene,globs.uniforms->getDefine("MAX_LIGHTS"));
     globs.allMeshes = Meshes::getFromGLTF(globs.vertexManager, scene );
      

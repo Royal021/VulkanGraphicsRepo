@@ -276,10 +276,10 @@
     <None Include="shaders\sky.vert">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="shaders\blit.frag">
+    <None Include="shaders\copyReflections.frag">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="shaders\blit.vert">
+    <None Include="shaders\copyReflections.vert">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>

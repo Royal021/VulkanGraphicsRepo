@@ -1,7 +1,7 @@
 #include "vkhelpers.h"
 #include "Descriptors.h"
-#include "BlitSquare.h"
 #include "Camera.h"
+#include "BlitSquare.h"
 #include "PushConstants.h"
 #include "GraphicsPipeline.h"
 #include "VertexManager.h"
@@ -31,6 +31,10 @@ struct Globals{
     
     /// true as long as the program should keep running
     bool keepLooping;
+
+    //blitsquare
+    BlitSquare* blitSquare;
+
     
     /// set of keys that are currently pressed
     std::set<int> keys;
@@ -40,11 +44,12 @@ struct Globals{
     
     /// the default graphics pipeline
     GraphicsPipeline* pipeline;
+    GraphicsPipeline* pipelineForWindow;
+    GraphicsPipeline* copyReflectionsToScreen;
     GraphicsPipeline* skymappipeline;
     GraphicsPipeline* floorPipeline1;
     GraphicsPipeline* reflectedObjectsPipeline;
     GraphicsPipeline* floorPipeline2;
-    GraphicsPipeline* blitPipe;
 
     Image* skyBoxImage;
     Image* Environmap;
@@ -86,9 +91,6 @@ struct Globals{
     
     /// collection of all lights
     LightCollection* allLights;
-
-    //blitsquare
-    BlitSquare* blitSquare;
 
 
 
