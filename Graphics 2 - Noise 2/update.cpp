@@ -2,11 +2,12 @@
 #include <SDL.h>
 #include "Globals.h"
 #include "consoleoutput.h"
-
+#include "PushConstants.h"
 using namespace math2801;
    
 void update(Globals& globs, float elapsed)
 {
+    globs.time += elapsed;
     float speed=1.0;
     if( globs.keys.contains(SDLK_LSHIFT)) speed *= 4.0f;
     if( globs.keys.contains(SDLK_w) )     globs.camera.strafeNoUpDown(0,0,speed*elapsed);

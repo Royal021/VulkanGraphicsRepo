@@ -135,8 +135,17 @@
     <ClInclude Include="gltf.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="BillboardCollection.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="BlitSquare.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BatchSquare.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="shaders\perlin.h">
+      <Filter>Shaders</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -254,7 +263,13 @@
     <ClCompile Include="vk.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="BillboardCollection.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="BlitSquare.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BatchSquare.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -276,10 +291,10 @@
     <None Include="shaders\sky.vert">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="shaders\blit.frag">
+    <None Include="shaders\billboard.frag">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="shaders\blit.vert">
+    <None Include="shaders\billboard.vert">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>

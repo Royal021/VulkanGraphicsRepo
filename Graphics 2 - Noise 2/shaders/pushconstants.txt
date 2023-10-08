@@ -6,11 +6,11 @@ layout(push_constant,row_major) uniform pushConstants {
     mat4 worldMatrix;    
     vec4 baseColorFactor;
     vec3 emissiveFactor; 
-    int animationFrame;
-    int doingReflections;
+    int animationFrame;  
     float normalFactor;
     float metallicFactor;
     float roughnessFactor;
+    float time;
 };
 
 

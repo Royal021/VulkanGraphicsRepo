@@ -19,6 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BatchSquare.h" />
+    <ClInclude Include="BillboardCollection.h" />
     <ClInclude Include="BlitSquare.h" />
     <ClInclude Include="Buffers.h" />
     <ClInclude Include="Camera.h" />
@@ -51,6 +53,7 @@
     <ClInclude Include="RenderPass.h" />
     <ClInclude Include="Samplers.h" />
     <ClInclude Include="ShaderManager.h" />
+    <ClInclude Include="shaders\perlin.h" />
     <ClInclude Include="timeutil.h" />
     <ClInclude Include="Uniforms.h" />
     <ClInclude Include="utils.h" />
@@ -60,6 +63,8 @@
     <ClInclude Include="vkhelpers.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="BatchSquare.cpp" />
+    <ClCompile Include="BillboardCollection.cpp" />
     <ClCompile Include="BlitSquare.cpp" />
     <ClCompile Include="Buffers.cpp" />
     <ClCompile Include="Camera.cpp" />
@@ -112,8 +117,8 @@
     </CopyFileToFolders>
   </ItemGroup>
   <ItemGroup>
-    <None Include="shaders\blit.frag" />
-    <None Include="shaders\blit.vert" />
+    <None Include="shaders\billboard.frag" />
+    <None Include="shaders\billboard.vert" />
     <None Include="shaders\main.frag" />
     <None Include="shaders\main.vert" />
     <None Include="shaders\sky.frag" />
