@@ -13,6 +13,8 @@ layout(location=3) in vec4 tangent;
 layout(location=4) in vec2 texcoord2;
 
 layout(location=0) out vec4 color;
+layout(location=1) out vec4 glow;
+
 
 layout(set=0,binding=BASE_TEXTURE_SAMPLER_SLOT) uniform sampler texSampler;
 layout(set=0,binding=BASE_TEXTURE_SLOT) uniform texture2DArray baseColorTexture;
@@ -101,16 +103,7 @@ void computeLightContribution(vec3 c, int i, vec3 N, vec3 V, out vec3 diffuse, o
     vec3 L = lightPosition - worldPos*positional;
     float D = length(L);
     L /= D;
-    
-    //LambertDiffuse
-    //float dp = dot(N,L);
-    //dp = clamp(dp,0.0,1.0);
-    
-    //Phong
-    //vec3 R = reflect(-L,N);
-    //float sp = sign(dp) * dot(V,R);
-    //sp = clamp(sp,0.0,1.0);
-    //sp = pow(sp,16.0);
+       
     
     //schlick compute first line outside loop
     vec3 Fzero = mix( vec3(0.04), c, MF );
@@ -170,6 +163,7 @@ void main(){
     vec3 b = texture( sampler2DArray(normalTexture, texSampler),
                     vec3(texcoord2,animationFrame) ).xyz;
 
+
     if( doingReflections == 1 ){
         if( dot(vec4(worldPos,1.0),reflectionPlane) < 0 ){
             discard;
@@ -211,8 +205,7 @@ void main(){
     
     c.rgb = c.rgb * (ambient + totaldp) + totalsp;
     c.rgb = clamp(c.rgb, vec3(0.0), vec3(1.0) );
-    vec4 e = texture( sampler2DArray(emissiveTexture,texSampler),
-                      vec3(texcoord,0.0) );
+    vec4 e = texture(sampler2DArray(emissiveTexture,texSampler), vec3(texcoord,0.0));
 
     c.rgb += e.rgb * emissiveFactor.rgb;
 
@@ -224,4 +217,11 @@ void main(){
     {
         color.a *= 0.85;
     }
+
+    float biggest = max( color.r, max( color.g, color.b ) );
+    float glowAmount = smoothstep(
+        glowThreshold, 1, biggest
+    );
+    glow.rgb = glowAmount * color.rgb;
+    glow.a = 1.0;
 }
