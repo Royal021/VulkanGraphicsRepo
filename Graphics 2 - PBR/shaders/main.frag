@@ -19,7 +19,6 @@ layout(set=0,binding=BASE_TEXTURE_SLOT) uniform texture2DArray baseColorTexture;
 layout(set=0,binding=EMISSIVE_TEXTURE_SLOT) uniform texture2DArray emissiveTexture;
 layout(set=0,binding=NORMAL_TEXTURE_SLOT) uniform texture2DArray normalTexture;
 layout(set=0,binding=METALLICROUGHNESS_TEXTURE_SLOT) uniform texture2DArray metallicRoughnessTexture;
-layout(set=0,binding=ENVMAP_TEXTURE_SLOT) uniform textureCube environmentMap;
 
 #define AMBIENT_ABOVE vec3(0.3,0.3,0.3)
 #define AMBIENT_BELOW vec3(0.1,0.1,0.1)
@@ -170,13 +169,6 @@ void main(){
     vec3 b = texture( sampler2DArray(normalTexture, texSampler),
                     vec3(texcoord2,animationFrame) ).xyz;
 
-    if( doingReflections == 1 ){
-        if( dot(vec4(worldPos,1.0),reflectionPlane) < 0 ){
-            discard;
-            return;
-        }
-    }
-
     vec3 N = normal;
     N = doBumpMapping(b.xyz, N);
 
@@ -187,15 +179,6 @@ void main(){
     vec3 ambient = mix( AMBIENT_BELOW, AMBIENT_ABOVE, mappedY );
     
     vec3 V = normalize(eyePos-worldPos);
-
-    //reflected view vector
-    vec3 reflectedView = reflect(-V,N);
-
-    //reflection color
-    vec3 reflColor = texture(
-    samplerCube(environmentMap, texSampler),
-    reflectedView,
-    RF*8.0).rgb;
     
     vec3 totaldp = vec3(0.0);
     vec3 totalsp = vec3(0.0);
@@ -213,15 +196,6 @@ void main(){
     c.rgb = clamp(c.rgb, vec3(0.0), vec3(1.0) );
     vec4 e = texture( sampler2DArray(emissiveTexture,texSampler),
                       vec3(texcoord,0.0) );
-
     c.rgb += e.rgb * emissiveFactor.rgb;
-
-    //add reflection color
-    c.rgb += pow(1.0-RF,4.0) * MF * reflColor;
-
     color = c;
-    if( doingReflections == 2 )
-    {
-        color.a *= 0.85;
-    }
 }
