@@ -1,6 +1,5 @@
 #include "vkhelpers.h"
 #include "Descriptors.h"
-#include "BlitSquare.h"
 #include "Camera.h"
 #include "PushConstants.h"
 #include "GraphicsPipeline.h"
@@ -24,7 +23,6 @@ struct Globals{
     
     /// the framebuffer associated with the window
     Framebuffer* framebuffer;
-    Framebuffer* offscreen;
     
     /// default vertex manager
     VertexManager* vertexManager;
@@ -41,15 +39,15 @@ struct Globals{
     /// the default graphics pipeline
     GraphicsPipeline* pipeline;
     GraphicsPipeline* skymappipeline;
-    GraphicsPipeline* floorPipeline1;
-    GraphicsPipeline* reflectedObjectsPipeline;
-    GraphicsPipeline* floorPipeline2;
-    GraphicsPipeline* blitPipe;
 
     Image* skyBoxImage;
     Image* Environmap;
     Mesh* skyboxMesh;
     
+
+    GraphicsPipeline* grassPipeline;
+
+    float time = 0.0f;
     /// the pipeline layout
     PipelineLayout* pipelineLayout;
     
@@ -64,17 +62,12 @@ struct Globals{
 
     /// manager for uniforms
     Uniforms* uniforms;
-
-    /// reflection
-    math2801::mat4 reflectionMatrix;
-    math2801::vec4 reflectionPlane;
-
     
     /// the default camera
     Camera camera{
-        math2801::vec3{-0.92,1.43,1.88},
-        math2801::vec3{-1.77,1.25,1.38},
-        math2801::vec3{0,1,0},
+        math2801::vec3{-0.277049,0.871309,3.330611},
+        math2801::vec3{-0.166372,0.850771,2.336963},
+        math2801::vec3{0.002274,0.999789,-0.020413},
         35.0f,
         1.0f,
         0.01f,
@@ -86,9 +79,6 @@ struct Globals{
     
     /// collection of all lights
     LightCollection* allLights;
-
-    //blitsquare
-    BlitSquare* blitSquare;
 
 
 
