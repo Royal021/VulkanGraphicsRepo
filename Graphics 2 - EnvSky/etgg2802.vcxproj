@@ -19,7 +19,6 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="BlitSquare.h" />
     <ClInclude Include="Buffers.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CleanupManager.h" />
@@ -60,7 +59,6 @@
     <ClInclude Include="vkhelpers.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="BlitSquare.cpp" />
     <ClCompile Include="Buffers.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CleanupManager.cpp" />
@@ -112,8 +110,6 @@
     </CopyFileToFolders>
   </ItemGroup>
   <ItemGroup>
-    <None Include="shaders\blit.frag" />
-    <None Include="shaders\blit.vert" />
     <None Include="shaders\main.frag" />
     <None Include="shaders\main.vert" />
     <None Include="shaders\sky.frag" />

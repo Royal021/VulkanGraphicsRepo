@@ -1,7 +1,6 @@
 #include "vkhelpers.h"
 #include "Globals.h"
 #include "ShaderManager.h"
-#include "BlitSquare.h"
 #include "importantConstants.h"
 #include "Uniforms.h"
 #include "ImageManager.h"
@@ -13,11 +12,9 @@ using namespace math2801;
   
 void setup(Globals& globs)
 {
-    globs.keepLooping = true;
+    globs.keepLooping=true;
     globs.framebuffer = new Framebuffer();
-    globs.offscreen = new Framebuffer(
-        globs.width, globs.height, 1, VK_FORMAT_R8G8B8A8_UNORM, "fbo");
-
+    
     globs.vertexManager = new VertexManager(
         globs.ctx,
         {
@@ -45,8 +42,6 @@ void setup(Globals& globs)
         }
     );
     
-    globs.blitSquare = new BlitSquare(globs.vertexManager);
-
     globs.pipelineLayout = new PipelineLayout(
         globs.ctx,
         globs.pushConstants,
@@ -58,20 +53,11 @@ void setup(Globals& globs)
         "globs.pipelineLayout"
     );
     
-    globs.blitPipe = (new GraphicsPipeline(
-        globs.ctx, globs.pipelineLayout,
-        globs.vertexManager->layout,
-        globs.framebuffer,
-        "blit pipe"
-    ))
-    ->set(ShaderManager::load("shaders/blit.vert"))
-    ->set(ShaderManager::load("shaders/blit.frag"));
-
     globs.pipeline = (new GraphicsPipeline(
         globs.ctx,
         globs.pipelineLayout,
         globs.vertexManager->layout,
-        globs.offscreen,
+        globs.framebuffer,
         "main pipeline"
     ))
     ->set(ShaderManager::load("shaders/main.vert"))
@@ -85,20 +71,6 @@ void setup(Globals& globs)
         globs.vertexManager,
         gltf::parse("assets/skybox.glb")
     )[0];
-
-    globs.floorPipeline1 = globs.pipeline->clone("floor pipeline 1")
-        ->set(VK_BLEND_FACTOR_ZERO, VK_BLEND_FACTOR_ONE)
-        ->set(true, true, true, VK_COMPARE_OP_ALWAYS, 1,
-            VK_STENCIL_OP_KEEP, VK_STENCIL_OP_KEEP, VK_STENCIL_OP_REPLACE);
-
-    globs.reflectedObjectsPipeline = globs.pipeline->clone("reflected")
-        ->set(true, true, true, VK_COMPARE_OP_EQUAL, 1,
-            VK_STENCIL_OP_KEEP, VK_STENCIL_OP_KEEP, VK_STENCIL_OP_KEEP);
-
-    globs.floorPipeline2 = globs.pipeline->clone("floor pipeline 2")
-        ->set(VK_BLEND_FACTOR_SRC_ALPHA, VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA)
-        ->set(false, false, true, VK_COMPARE_OP_EQUAL, 1,
-            VK_STENCIL_OP_KEEP, VK_STENCIL_OP_KEEP, VK_STENCIL_OP_KEEP);
 
 
     globs.descriptorSetFactory = new DescriptorSetFactory(
@@ -135,20 +107,6 @@ void setup(Globals& globs)
     globs.allLights = new LightCollection(scene,globs.uniforms->getDefine("MAX_LIGHTS"));
     globs.allMeshes = Meshes::getFromGLTF(globs.vertexManager, scene );
      
-    vec3 p(0.0f, -2.1188f, 0.0f);
-    float A = 0.0f;
-    float B = 1.0f;
-    float C = 0.0f;
-    float D = -(A * p.x + B * p.y + C * p.z);
-    vec3 N(A, B, C);
-    globs.reflectionMatrix = (mat4::identity() - 2 * mat4(
-        N.x * N.x, N.y * N.x, N.z * N.x, 0,
-        N.x * N.y, N.y * N.y, N.z * N.y, 0,
-        N.x * N.z, N.y * N.z, N.z * N.z, 0,
-        N.x * D,   N.y * D,   N.z * D,   0
-    ));
-
-    globs.reflectionPlane = vec4(A, B, C, D);
 
     globs.vertexManager->pushToGPU();
     ImageManager::pushToGPU();

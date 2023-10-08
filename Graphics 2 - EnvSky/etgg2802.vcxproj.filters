@@ -135,9 +135,6 @@
     <ClInclude Include="gltf.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="BlitSquare.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Buffers.cpp">
@@ -254,9 +251,6 @@
     <ClCompile Include="vk.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="BlitSquare.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="SDL2.dll">
@@ -274,12 +268,6 @@
       <Filter>Shaders</Filter>
     </None>
     <None Include="shaders\sky.vert">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="shaders\blit.frag">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="shaders\blit.vert">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>
