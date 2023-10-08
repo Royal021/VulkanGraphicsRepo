@@ -1,6 +1,5 @@
 #include "vkhelpers.h"
 #include "Descriptors.h"
-#include "BlitSquare.h"
 #include "Camera.h"
 #include "PushConstants.h"
 #include "GraphicsPipeline.h"
@@ -8,8 +7,10 @@
 #include "Framebuffer.h"
 #include "Meshes.h"
 #include "Light.h"
+#include "BillboardCollection.h"
 #include <vector>
 #include <set>
+#include "ParticleSystem.h"
 
 struct Globals{
     
@@ -24,7 +25,6 @@ struct Globals{
     
     /// the framebuffer associated with the window
     Framebuffer* framebuffer;
-    Framebuffer* offscreen;
     
     /// default vertex manager
     VertexManager* vertexManager;
@@ -41,15 +41,15 @@ struct Globals{
     /// the default graphics pipeline
     GraphicsPipeline* pipeline;
     GraphicsPipeline* skymappipeline;
-    GraphicsPipeline* floorPipeline1;
-    GraphicsPipeline* reflectedObjectsPipeline;
-    GraphicsPipeline* floorPipeline2;
-    GraphicsPipeline* blitPipe;
 
     Image* skyBoxImage;
     Image* Environmap;
     Mesh* skyboxMesh;
     
+    //BillboardCollection* billboardCollection;
+    GraphicsPipeline* pipelineDrawBillboards;
+
+    ParticleSystem* particleSystem;
     /// the pipeline layout
     PipelineLayout* pipelineLayout;
     
@@ -64,11 +64,6 @@ struct Globals{
 
     /// manager for uniforms
     Uniforms* uniforms;
-
-    /// reflection
-    math2801::mat4 reflectionMatrix;
-    math2801::vec4 reflectionPlane;
-
     
     /// the default camera
     Camera camera{
@@ -86,9 +81,6 @@ struct Globals{
     
     /// collection of all lights
     LightCollection* allLights;
-
-    //blitsquare
-    BlitSquare* blitSquare;
 
 
 
