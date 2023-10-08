@@ -13,6 +13,7 @@ layout(location=3) in vec4 tangent;
 layout(location=4) in vec2 texcoord2;
 
 layout(location=0) out vec4 color;
+layout(location=1) out vec4 color2;
 
 layout(set=0,binding=BASE_TEXTURE_SAMPLER_SLOT) uniform sampler texSampler;
 layout(set=0,binding=BASE_TEXTURE_SLOT) uniform texture2DArray baseColorTexture;
@@ -224,4 +225,5 @@ void main(){
     {
         color.a *= 0.85;
     }
+    color2 = color;
 }

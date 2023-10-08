@@ -1086,7 +1086,8 @@ void Framebuffer::blur(unsigned radius, unsigned layer,
 
     this->blurHelper->endRenderPass(cmd);
 
-    this->beginOneLayerRenderPassDiscardContentsWithIndex(this->completedRenderIndex, layer, cmd);
+    //this->beginOneLayerRenderPassDiscardContentsWithIndex(this->completedRenderIndex,layer,cmd);
+    this->beginOneLayerRenderPassKeepContentsWithIndex(this->completedRenderIndex, layer, cmd);
     fbBlurPushConstants->set(cmd, "blurDelta", vec2(0.0f, 1.0f));
     //FIXME: iterations is too pessimistic
     fbBlurPushConstants->set(cmd, "blurLayerAndIterations", radius / 2 + 1);

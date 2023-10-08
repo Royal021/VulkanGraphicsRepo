@@ -48,6 +48,12 @@ void handleEvents(Globals& globs)
                 globs.ctx->screenshot(0,"screenshot.png");
                 print("Wrote screenshot.png");
             }
+            if (ev.key.keysym.sym == SDLK_1) {           
+                globs.focD += 0.05f; 
+            }
+            if (ev.key.keysym.sym == SDLK_2) {
+                globs.focD -= 0.05f;
+            }
         }
         if(ev.type == SDL_KEYUP){
             globs.keys.erase(ev.key.keysym.sym);

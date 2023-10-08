@@ -14,4 +14,5 @@ layout(set=0,binding=UNIFORM_BUFFER_SLOT,std140,row_major) uniform UBO{
     vec4 reflectionPlane;
     vec3 eyePos;
     vec3 attenuation;
+    float focalDistance;
 };

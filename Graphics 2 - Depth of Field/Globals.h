@@ -19,6 +19,9 @@ struct Globals{
     /// height of the window
     int height;
     
+    /// focal dist
+    float focD = 1.0f;
+    
     /// the rendering context
     VulkanContext* ctx;
     

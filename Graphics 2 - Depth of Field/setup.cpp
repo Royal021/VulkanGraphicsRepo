@@ -16,7 +16,8 @@ void setup(Globals& globs)
     globs.keepLooping = true;
     globs.framebuffer = new Framebuffer();
     globs.offscreen = new Framebuffer(
-        globs.width, globs.height, 1, VK_FORMAT_R8G8B8A8_UNORM, "fbo");
+        globs.width, globs.height, 2,
+        VK_FORMAT_R8G8B8A8_UNORM, "fbo");
 
     globs.vertexManager = new VertexManager(
         globs.ctx,
@@ -39,8 +40,10 @@ void setup(Globals& globs)
             { .type=VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE,     .slot=EMISSIVE_TEXTURE_SLOT     },
             { .type=VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,    .slot=UNIFORM_BUFFER_SLOT       },
             {.type = VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE,    .slot = NORMAL_TEXTURE_SLOT     },
-            {.type = VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE,    .slot = METALLICROUGHNESS_TEXTURE_SLOT    },
+            {.type = VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE,    .slot = METALLICROUGHNESS_TEXTURE_SLOT   },
              {.type = VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE,   .slot = ENVMAP_TEXTURE_SLOT  },
+             {.type = VK_DESCRIPTOR_TYPE_SAMPLER,     .slot = NEAREST_SAMPLER_SLOT	  },
+              
 
         }
     );
@@ -131,7 +134,7 @@ void setup(Globals& globs)
         "assets/nebula1_5.jpg"
         });
 
-    gltf::GLTFScene scene = gltf::parse("assets/room.glb");
+    gltf::GLTFScene scene = gltf::parse("assets/kitchen.glb");
     globs.allLights = new LightCollection(scene,globs.uniforms->getDefine("MAX_LIGHTS"));
     globs.allMeshes = Meshes::getFromGLTF(globs.vertexManager, scene );
      
