@@ -1,0 +1,23 @@
+#define MAX_LIGHTS 24
+
+#include "../importantConstants.h"
+
+layout(set=0,binding=UNIFORM_BUFFER_SLOT,std140,row_major) uniform UBO{
+    mat4 viewMatrix;
+    mat4 viewProjMatrix;
+    mat4 projMatrix;
+    vec4 lightPositionAndDirectionalFlag[MAX_LIGHTS];
+    vec4 lightColorAndIntensity[MAX_LIGHTS];
+    vec4 cosSpotAngles[MAX_LIGHTS];
+    vec4 spotDirection[MAX_LIGHTS];
+    vec3 eyePos;
+    vec3 attenuation;
+
+
+    vec4 projTexPlane;   //plane of window ABCD
+    vec3 projTexLightDir;  //direction to the light sorce that projects texture
+    vec3 projTexEastVector;  //  unit vector from left to right "E"
+    vec3 projTexSouthVector; // unit verctor from top to bottom "S"
+    vec3 projTexCorner; //NW corner of the window "C"
+    vec2 projTexSize;  // width and heigh of window in world space unitssize fo projected texture D_SN , D_WE
+};
