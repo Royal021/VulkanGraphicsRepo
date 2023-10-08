@@ -1,7 +1,6 @@
 #include "vkhelpers.h"
 #include "Globals.h"
 #include "ShaderManager.h"
-#include "BlitSquare.h"
 #include "importantConstants.h"
 #include "Uniforms.h"
 #include "ImageManager.h"
@@ -15,9 +14,7 @@ void setup(Globals& globs)
 {
     globs.keepLooping = true;
     globs.framebuffer = new Framebuffer();
-    globs.offscreen = new Framebuffer(
-        globs.width, globs.height, 1, VK_FORMAT_R8G8B8A8_UNORM, "fbo");
-
+    
     globs.vertexManager = new VertexManager(
         globs.ctx,
         {
@@ -45,8 +42,6 @@ void setup(Globals& globs)
         }
     );
     
-    globs.blitSquare = new BlitSquare(globs.vertexManager);
-
     globs.pipelineLayout = new PipelineLayout(
         globs.ctx,
         globs.pushConstants,
@@ -58,20 +53,11 @@ void setup(Globals& globs)
         "globs.pipelineLayout"
     );
     
-    globs.blitPipe = (new GraphicsPipeline(
-        globs.ctx, globs.pipelineLayout,
-        globs.vertexManager->layout,
-        globs.framebuffer,
-        "blit pipe"
-    ))
-    ->set(ShaderManager::load("shaders/blit.vert"))
-    ->set(ShaderManager::load("shaders/blit.frag"));
-
     globs.pipeline = (new GraphicsPipeline(
         globs.ctx,
         globs.pipelineLayout,
         globs.vertexManager->layout,
-        globs.offscreen,
+        globs.framebuffer,
         "main pipeline"
     ))
     ->set(ShaderManager::load("shaders/main.vert"))
@@ -131,7 +117,7 @@ void setup(Globals& globs)
         "assets/nebula1_5.jpg"
         });
 
-    gltf::GLTFScene scene = gltf::parse("assets/room.glb");
+    gltf::GLTFScene scene = gltf::parse("assets/kitchen.glb");
     globs.allLights = new LightCollection(scene,globs.uniforms->getDefine("MAX_LIGHTS"));
     globs.allMeshes = Meshes::getFromGLTF(globs.vertexManager, scene );
      

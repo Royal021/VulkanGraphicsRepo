@@ -18,8 +18,8 @@ class VertexManager;
 
 
 /// A Framebuffer is a render target, either the window or else an offscreen image.
-class Framebuffer {
-public:
+class Framebuffer{
+  public:
 
     /// Initialize the subsystem.
     /// @param ctx The context
@@ -156,67 +156,39 @@ public:
     ///        the parameter provided will be rebound as the vertex manager before blur() returns.
     ///        This parameter may be null.
     void blur(unsigned radius, unsigned layer, float scaleFactor,
-        VkCommandBuffer cmd, VertexManager* currentVertexManager);
-
-    /// Blur this Framebuffer; this cannot be called on a
-    /// Framebuffer associated with the window. (It must be
-    /// an offscreen image). Note that this function
-    /// changes the currently bound pipeline and descriptor sets,
-    /// so you must rebind any pipeline or descriptor sets that you need.
-    /// @param radius The blur radius. Must be <= 56
-    /// @param layer The layer to blur
-    /// @param scaleFactor Each pixel channel will be multiplied by this value after blurring
-    /// @param cmd The command buffer
-    /// @param currentVertexManager This function changes the currently bound vertex manager;
-    ///        the parameter provided will be rebound as the vertex manager before blur() returns.
-    ///        This parameter may be null.
-    /// @param doDistanceDependentBlur True to do a distance-dependent blur, suitable for
-    ///        depth of field effects.
-    void blur(unsigned radius, unsigned layer, float scaleFactor,
-        VkCommandBuffer cmd, VertexManager* currentVertexManager,
-        bool doDistanceDependentBlur);
-
+              VkCommandBuffer cmd, VertexManager* currentVertexManager);
 
     /// Return the most recently rendered image. This requires that at least one
     /// render pass has been completed on this Framebuffer (it will use whatever
     /// image was last rendered in a renderpass).
     Image* currentImage();
 
-    /// Returns view of most recently rendered depth buffer.
-    /// This requires that at least one
-    /// render pass has been completed on this Framebuffer (it will use whatever
-    /// image was last rendered in a renderpass).
-    VkImageView currentDepthBufferView();
-
-private:
+  private:
     void beginOneLayerRenderPassDiscardContentsWithIndex(int imageIndex, int layerIndex, VkCommandBuffer cmd);
-    void beginOneLayerRenderPassKeepContentsWithIndex(int imageIndex, int layerIndex, VkCommandBuffer cmd);
     void beginRenderPassHelper(int imageIndex, int layerIndex, VkCommandBuffer cmd,
         VkAttachmentLoadOp loadOp, float r, float g, float b, float a);
     std::vector<VkFramebuffer> allLayersFramebuffers;   //one per swapchain image
     std::vector< std::vector<VkFramebuffer> > singleLayerFramebuffers;  //outer=swapchain index, inner=layer index
 
-    int completedRenderIndex = -1;            //frame that we last completed a rendering to: 0...num swapchain images-1
-    int currentRenderIndex = -1;              // frame that we are currently rendering into; -1 if none
+    int lastRenderedImage=-1;               //frame that we last rendered into: 0...num swapchain images-1
+    int currentRenderedImage=-1;            // frame that we are currently rendering into; -1 if none
 
-    bool insideRenderpass = false;            //true if we're in a renderpass
+    bool insideRenderpass=false;            //true if we're in a renderpass
     std::vector<Image*> colorBuffers;       //one per swapchain image
     std::vector<Image*> depthBuffers;       //one per swapchain image
-    std::vector<VkImageView> depthBufferViews;  // one per swapchain image; view only includes depth aspect so we can use for fbo's
-
     bool isDefaultFB;
-    bool pushedToGPU = false;
-    GraphicsPipeline* blurPipeline = nullptr;
-    GraphicsPipeline* blurDDPipelineWriteToHelper = nullptr;
-    GraphicsPipeline* blurDDPipelineWriteToFB = nullptr;
+    bool pushedToGPU=false;
+    GraphicsPipeline* blurPipeline=nullptr;
     void pushToGPU();
 
     Framebuffer(
         bool blurrable, unsigned w, unsigned h, unsigned layers, VkFormat format, std::string name
     );
 
-    Framebuffer* blurHelper = nullptr;    //pointer into map, not a private FB
-    DescriptorSet* blurDescriptorSet;
+    Framebuffer* blurHelper=nullptr;    //pointer into map, not a private FB
+    std::vector<DescriptorSet*> blurDescriptorSets; //one per swapchain image
     Framebuffer(const Framebuffer&) = delete;
     void operator=(const Framebuffer&) = delete;
 };
+
+

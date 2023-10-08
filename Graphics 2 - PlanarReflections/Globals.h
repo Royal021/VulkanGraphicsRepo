@@ -1,6 +1,5 @@
 #include "vkhelpers.h"
 #include "Descriptors.h"
-#include "BlitSquare.h"
 #include "Camera.h"
 #include "PushConstants.h"
 #include "GraphicsPipeline.h"
@@ -24,7 +23,6 @@ struct Globals{
     
     /// the framebuffer associated with the window
     Framebuffer* framebuffer;
-    Framebuffer* offscreen;
     
     /// default vertex manager
     VertexManager* vertexManager;
@@ -44,7 +42,6 @@ struct Globals{
     GraphicsPipeline* floorPipeline1;
     GraphicsPipeline* reflectedObjectsPipeline;
     GraphicsPipeline* floorPipeline2;
-    GraphicsPipeline* blitPipe;
 
     Image* skyBoxImage;
     Image* Environmap;
@@ -86,9 +83,6 @@ struct Globals{
     
     /// collection of all lights
     LightCollection* allLights;
-
-    //blitsquare
-    BlitSquare* blitSquare;
 
 
 
