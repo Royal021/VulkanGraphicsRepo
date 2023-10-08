@@ -21,6 +21,10 @@ layout(set=0,binding=NORMAL_TEXTURE_SLOT) uniform texture2DArray normalTexture;
 layout(set=0,binding=METALLICROUGHNESS_TEXTURE_SLOT) uniform texture2DArray metallicRoughnessTexture;
 layout(set=0,binding=ENVMAP_TEXTURE_SLOT) uniform textureCube environmentMap;
 
+layout(set=0,binding=SHADOWBUFFER_SLOT) uniform texture2DArray shadowBuffer;
+
+layout(set=0,binding=NEAREST_SAMPLER_SLOT) uniform sampler nearestSampler;
+
 #define AMBIENT_ABOVE vec3(0.3,0.3,0.3)
 #define AMBIENT_BELOW vec3(0.1,0.1,0.1)
 #define PI 3.14159265358979323
@@ -161,6 +165,34 @@ vec3 doBumpMapping(vec3 b, vec3 N)
 }
 
 
+bool pointIsInShadow( vec3 p, vec3 lightPos,
+                      mat4 viewProjMatrix, vec3 hitherYon)
+{
+    float distanceFromLight = distance(p, lightPos);
+    vec4 pp = vec4(p,1.0) * viewProjMatrix;
+
+    //do perspective (homogeneous) divide
+    pp /= pp.w;
+
+    //pp is in -1...1 range. Remap to 0...1 range
+    pp.xy += vec2(1.0);
+    pp.xy *= 0.5;
+
+    float shadowBufferDistance = texture(
+	    sampler2DArray(shadowBuffer,nearestSampler),
+		      vec3(pp.xy,0)
+    ).r;
+
+    //remap from 0...1 to hither...yon
+    shadowBufferDistance = mix(hitherYon[0],hitherYon[1],
+						       shadowBufferDistance);
+
+    if( shadowBufferDistance < distanceFromLight )
+	    return true;    //in shadow
+    else
+	    return false;   //light can see p
+}
+
 void main(){
      
     vec4 c = texture( sampler2DArray(baseColorTexture,texSampler),
@@ -170,12 +202,6 @@ void main(){
     vec3 b = texture( sampler2DArray(normalTexture, texSampler),
                     vec3(texcoord2,animationFrame) ).xyz;
 
-    if( doingReflections == 1 ){
-        if( dot(vec4(worldPos,1.0),reflectionPlane) < 0 ){
-            discard;
-            return;
-        }
-    }
 
     vec3 N = normal;
     N = doBumpMapping(b.xyz, N);
@@ -203,12 +229,26 @@ void main(){
     for(int i=0;i<MAX_LIGHTS;++i){
         vec3 dp;
         vec3 sp;
+
+        if( pointIsInShadow(
+        worldPos,
+        light_eyePos,
+        light_viewProjMatrix,
+        light_hitherYon)
+        )   
+        {
+        continue;
+        }
         computeLightContribution(c.rgb,i,N,V,dp,sp);
         
         totaldp += dp;
         totalsp += sp;
+
+
     }
     
+
+
     c.rgb = c.rgb * (ambient + totaldp) + totalsp;
     c.rgb = clamp(c.rgb, vec3(0.0), vec3(1.0) );
     vec4 e = texture( sampler2DArray(emissiveTexture,texSampler),
@@ -220,8 +260,4 @@ void main(){
     c.rgb += pow(1.0-RF,4.0) * MF * reflColor;
 
     color = c;
-    if( doingReflections == 2 )
-    {
-        color.a *= 0.85;
-    }
 }

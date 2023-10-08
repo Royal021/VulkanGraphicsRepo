@@ -1,23 +1,21 @@
 #include "vkhelpers.h"
 #include "Globals.h"
 #include "ShaderManager.h"
-#include "BlitSquare.h"
 #include "importantConstants.h"
 #include "Uniforms.h"
 #include "ImageManager.h"
 #include "gltf.h"
 #include "GraphicsPipeline.h"
 #include <SDL.h>
+#include "Samplers.h"
 
 using namespace math2801;
   
 void setup(Globals& globs)
 {
-    globs.keepLooping = true;
+    globs.keepLooping=true;
     globs.framebuffer = new Framebuffer();
-    globs.offscreen = new Framebuffer(
-        globs.width, globs.height, 1, VK_FORMAT_R8G8B8A8_UNORM, "fbo");
-
+    globs.shadowBuffer = new Framebuffer(512, 512, 1, VK_FORMAT_R32_SFLOAT, "shadowbuffer");
     globs.vertexManager = new VertexManager(
         globs.ctx,
         {
@@ -35,18 +33,18 @@ void setup(Globals& globs)
         globs.ctx,
         {
             { .type=VK_DESCRIPTOR_TYPE_SAMPLER,           .slot=BASE_TEXTURE_SAMPLER_SLOT },
+            {.type = VK_DESCRIPTOR_TYPE_SAMPLER,           .slot = NEAREST_SAMPLER_SLOT },
             { .type=VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE,     .slot=BASE_TEXTURE_SLOT         },
             { .type=VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE,     .slot=EMISSIVE_TEXTURE_SLOT     },
             { .type=VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,    .slot=UNIFORM_BUFFER_SLOT       },
             {.type = VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE,    .slot = NORMAL_TEXTURE_SLOT     },
             {.type = VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE,    .slot = METALLICROUGHNESS_TEXTURE_SLOT    },
-             {.type = VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE,   .slot = ENVMAP_TEXTURE_SLOT  },
+            {.type = VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE,   .slot = ENVMAP_TEXTURE_SLOT  },
+            {.type = VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE,   .slot = SHADOWBUFFER_SLOT  }
 
         }
     );
     
-    globs.blitSquare = new BlitSquare(globs.vertexManager);
-
     globs.pipelineLayout = new PipelineLayout(
         globs.ctx,
         globs.pushConstants,
@@ -58,25 +56,41 @@ void setup(Globals& globs)
         "globs.pipelineLayout"
     );
     
-    globs.blitPipe = (new GraphicsPipeline(
-        globs.ctx, globs.pipelineLayout,
-        globs.vertexManager->layout,
-        globs.framebuffer,
-        "blit pipe"
-    ))
-    ->set(ShaderManager::load("shaders/blit.vert"))
-    ->set(ShaderManager::load("shaders/blit.frag"));
-
     globs.pipeline = (new GraphicsPipeline(
         globs.ctx,
         globs.pipelineLayout,
         globs.vertexManager->layout,
-        globs.offscreen,
+        globs.framebuffer,
         "main pipeline"
     ))
     ->set(ShaderManager::load("shaders/main.vert"))
     ->set(ShaderManager::load("shaders/main.frag"));
-    
+
+    globs.shadowPipeline = (new GraphicsPipeline(
+        globs.ctx,
+        globs.pipelineLayout,
+        globs.vertexManager->layout,
+        globs.shadowBuffer,
+        "shadow pipeline"
+    ))
+        ->set(VkPipelineRasterizationStateCreateInfo{
+            .sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO,
+            .pNext = nullptr,
+            .flags = 0,
+            .depthClampEnable = 0,
+            .rasterizerDiscardEnable = 0,
+            .polygonMode = VK_POLYGON_MODE_FILL,
+            .cullMode = VK_CULL_MODE_FRONT_BIT,
+            .frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE,
+            .depthBiasEnable = 0,
+            .depthBiasConstantFactor = 0,
+            .depthBiasClamp = 0,
+            .depthBiasSlopeFactor = 0,
+            .lineWidth = 1.0f
+            })
+        ->set(ShaderManager::load("shaders/shadow.vert"))
+        ->set(ShaderManager::load("shaders/shadow.frag"));
+
     globs.skymappipeline = globs.pipeline->clone("skybox pipeline")
         ->set(ShaderManager::load("shaders/sky.vert"))
         ->set(ShaderManager::load("shaders/sky.frag"));
@@ -85,20 +99,6 @@ void setup(Globals& globs)
         globs.vertexManager,
         gltf::parse("assets/skybox.glb")
     )[0];
-
-    globs.floorPipeline1 = globs.pipeline->clone("floor pipeline 1")
-        ->set(VK_BLEND_FACTOR_ZERO, VK_BLEND_FACTOR_ONE)
-        ->set(true, true, true, VK_COMPARE_OP_ALWAYS, 1,
-            VK_STENCIL_OP_KEEP, VK_STENCIL_OP_KEEP, VK_STENCIL_OP_REPLACE);
-
-    globs.reflectedObjectsPipeline = globs.pipeline->clone("reflected")
-        ->set(true, true, true, VK_COMPARE_OP_EQUAL, 1,
-            VK_STENCIL_OP_KEEP, VK_STENCIL_OP_KEEP, VK_STENCIL_OP_KEEP);
-
-    globs.floorPipeline2 = globs.pipeline->clone("floor pipeline 2")
-        ->set(VK_BLEND_FACTOR_SRC_ALPHA, VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA)
-        ->set(false, false, true, VK_COMPARE_OP_EQUAL, 1,
-            VK_STENCIL_OP_KEEP, VK_STENCIL_OP_KEEP, VK_STENCIL_OP_KEEP);
 
 
     globs.descriptorSetFactory = new DescriptorSetFactory(
@@ -131,25 +131,23 @@ void setup(Globals& globs)
         "assets/nebula1_5.jpg"
         });
 
-    gltf::GLTFScene scene = gltf::parse("assets/room.glb");
+    gltf::GLTFScene scene = gltf::parse("assets/room3.glb");
     globs.allLights = new LightCollection(scene,globs.uniforms->getDefine("MAX_LIGHTS"));
     globs.allMeshes = Meshes::getFromGLTF(globs.vertexManager, scene );
      
-    vec3 p(0.0f, -2.1188f, 0.0f);
-    float A = 0.0f;
-    float B = 1.0f;
-    float C = 0.0f;
-    float D = -(A * p.x + B * p.y + C * p.z);
-    vec3 N(A, B, C);
-    globs.reflectionMatrix = (mat4::identity() - 2 * mat4(
-        N.x * N.x, N.y * N.x, N.z * N.x, 0,
-        N.x * N.y, N.y * N.y, N.z * N.y, 0,
-        N.x * N.z, N.y * N.z, N.z * N.z, 0,
-        N.x * D,   N.y * D,   N.z * D,   0
-    ));
+    vec3 lightPos = globs.allLights->lightPositionAndDirectionalFlag[0].xyz();
+    vec3 lightDir = globs.allLights->spotDirection[0].xyz();
+    globs.lightCamera = Camera(
+        lightPos,
+        lightPos + lightDir,
+        vec3(0, 1, 0),    //invalid if light pointing straight up/down
+        float(std::acos(globs.allLights->cosSpotAngles[0].y) / 3.14159265358797323 * 180.0),
+        1.0f,       //aspect ratio
+        0.01f,      //hither
+        10.0f      //yon
+    );
 
-    globs.reflectionPlane = vec4(A, B, C, D);
-
+    globs.descriptorSet->setSlot(NEAREST_SAMPLER_SLOT, Samplers::nearestSampler);
     globs.vertexManager->pushToGPU();
     ImageManager::pushToGPU();
     

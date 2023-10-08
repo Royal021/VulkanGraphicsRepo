@@ -14,6 +14,8 @@
 #define METALLICROUGHNESS_TEXTURE_SLOT  5
 #define ENVMAP_TEXTURE_SLOT               6
 #define SKYBOX_TEXTURE_SLOT               6
+#define NEAREST_SAMPLER_SLOT             7
+#define SHADOWBUFFER_SLOT                8
 
 #define POSITION_SLOT               0
 #define TEXCOORD_SLOT               1

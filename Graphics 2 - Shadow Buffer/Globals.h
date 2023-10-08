@@ -1,6 +1,5 @@
 #include "vkhelpers.h"
 #include "Descriptors.h"
-#include "BlitSquare.h"
 #include "Camera.h"
 #include "PushConstants.h"
 #include "GraphicsPipeline.h"
@@ -24,10 +23,11 @@ struct Globals{
     
     /// the framebuffer associated with the window
     Framebuffer* framebuffer;
-    Framebuffer* offscreen;
+    Framebuffer* shadowBuffer;
     
     /// default vertex manager
     VertexManager* vertexManager;
+
     
     /// true as long as the program should keep running
     bool keepLooping;
@@ -41,10 +41,7 @@ struct Globals{
     /// the default graphics pipeline
     GraphicsPipeline* pipeline;
     GraphicsPipeline* skymappipeline;
-    GraphicsPipeline* floorPipeline1;
-    GraphicsPipeline* reflectedObjectsPipeline;
-    GraphicsPipeline* floorPipeline2;
-    GraphicsPipeline* blitPipe;
+    GraphicsPipeline* shadowPipeline;
 
     Image* skyBoxImage;
     Image* Environmap;
@@ -64,11 +61,6 @@ struct Globals{
 
     /// manager for uniforms
     Uniforms* uniforms;
-
-    /// reflection
-    math2801::mat4 reflectionMatrix;
-    math2801::vec4 reflectionPlane;
-
     
     /// the default camera
     Camera camera{
@@ -81,14 +73,21 @@ struct Globals{
         1000.0f
     };
     
+    Camera lightCamera{
+        math2801::vec3{0,0,0},  //where light source is
+        math2801::vec3{0,0,0},  //where the light is pointing
+        math2801::vec3{0,0,0},  ///up vector
+        35.0f,
+        1.0f,
+        0.01f,
+        1000.0f
+    };
+
     /// collection of all meshes
     std::vector<Mesh*> allMeshes;
     
     /// collection of all lights
     LightCollection* allLights;
-
-    //blitsquare
-    BlitSquare* blitSquare;
 
 
 

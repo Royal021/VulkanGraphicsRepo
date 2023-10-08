@@ -553,4 +553,3 @@ void Image::layoutTransition(
 
 }
 
-

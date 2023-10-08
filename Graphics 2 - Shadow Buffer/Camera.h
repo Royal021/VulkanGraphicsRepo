@@ -66,7 +66,7 @@ class Camera{
     
     /// Set the uniforms associated with the camera.
     /// @param uniforms The Uniforms object to use
-    void setUniforms(Uniforms* uniforms);
+    void setUniforms(Uniforms* uniforms, std::string prefix);
     
     /// Set the camera parameters to look at a given location and call updateViewMatrix.
     /// @param eye The eye location

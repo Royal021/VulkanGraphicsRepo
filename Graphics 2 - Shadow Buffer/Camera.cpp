@@ -54,12 +54,14 @@ void Camera::updateViewMatrix()
     this->viewProjMatrix = this->viewMatrix*this->projMatrix;
 }
 
-void Camera::setUniforms(Uniforms* uniforms)
+void Camera::setUniforms(Uniforms* uniforms, std::string prefix)
 {
-    uniforms->set("viewMatrix",this->viewMatrix);
-    uniforms->set("viewProjMatrix",this->viewProjMatrix);
-    uniforms->set("projMatrix",this->projMatrix);
-    uniforms->set("eyePos",this->eye);
+    uniforms->set(prefix + "viewMatrix", this->viewMatrix);
+    uniforms->set(prefix + "viewProjMatrix", this->viewProjMatrix);
+    uniforms->set(prefix + "projMatrix", this->projMatrix);
+    uniforms->set(prefix + "eyePos", this->eye);
+    uniforms->set(prefix + "hitherYon", math2801::vec3(this->hither, this->yon, this->yon - this->hither));
+    uniforms->set(prefix + "look", this->look);
 }
 
 void Camera::strafe(float deltaRight, float deltaUp, float deltaLook)
