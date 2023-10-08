@@ -1,0 +1,29 @@
+
+//total of 128 bytes= 32 floats
+//can have mat4 + 16 floats
+
+layout(push_constant,row_major) uniform pushConstants {
+    mat4 worldMatrix;    
+    vec4 baseColorFactor;
+    vec3 emissiveFactor; 
+    int animationFrame;  
+    float normalFactor;
+    float metallicFactor;
+    float roughnessFactor;
+};
+
+
+//                                      as float    packed
+//  worldMatrix                         16          16
+//  baseColorFactor rgb                 3            1      (4*UNORM)
+//  emissionColorFactor rgb             3            1.5    (3 half's)
+//  bumpScale (scalar)                  1            0.5    (half)
+//  metallicFactor (scalar)             1            0.5    (half)
+//  roughnessFactor (scalar)            1            0.5    (half)
+//  occlusionTexture strength (scalar)  1            0.5    (half)
+//  animationFrame                      1            0.5    (short)
+//  Total:                              27           21
+//
+// Or, create a 1x1 texture with multiple layers
+// with data about different aspects (bumpScale, metallicFactor, etc.)
+// and store layer index into push constants.
