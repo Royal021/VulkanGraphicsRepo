@@ -14,23 +14,19 @@ layout(location=TEXCOORD2_SLOT) in vec2 texcoord2;
 
 
 layout(location=0) out vec2 v_texcoord;
-layout(location=1) out vec3 v_normal;
-layout(location=2) out vec3 v_worldpos;
-layout(location=3) out vec4 v_tangent;
-layout(location=4) out vec2 v_texcoord2;
+layout(location=1) out vec2 v_texcoord2;
+layout(location=2) out vec3 v_normal;
+layout(location=3) out vec3 v_worldpos;
+layout(location=4) out vec4 v_tangent;
 
 void main(){
     vec4 p = vec4(position,1.0);
     p = p * worldMatrix;
     v_worldpos = p.xyz;
-    if( doingReflections == 1 )
-    {
-        p = p * reflectionMatrix;
-    }
-    p = p * viewProjMatrix;
-    gl_Position = p;
+    //REMOVED: p = p * viewProjMatrix;
+    //REMOVED: gl_Position = p;
     v_texcoord = texcoord;
-    v_normal = normal;
-    v_tangent = tangent;
     v_texcoord2 = texcoord2;
+    v_normal = normal;
+    v_tangent=tangent;
 }

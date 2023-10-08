@@ -220,3 +220,4 @@ private:
     Framebuffer(const Framebuffer&) = delete;
     void operator=(const Framebuffer&) = delete;
 };
+

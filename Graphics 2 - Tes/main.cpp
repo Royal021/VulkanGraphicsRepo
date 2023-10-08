@@ -58,6 +58,7 @@ int main(int , char** )
     VkPhysicalDeviceFeatures featuresToEnable{};
     featuresToEnable.samplerAnisotropy=VK_TRUE;
     featuresToEnable.fillModeNonSolid=VK_TRUE;
+    featuresToEnable.tessellationShader = VK_TRUE;
     globs.ctx = new VulkanContext(win=win,featuresToEnable,1);
 
     CommandBuffer::initialize(globs.ctx);

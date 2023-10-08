@@ -7,10 +7,11 @@
 #include "uniforms.txt"
 
 layout(location=0) in vec2 texcoord;
-layout(location=1) in vec3 normal;
-layout(location=2) in vec3 worldPos;
-layout(location=3) in vec4 tangent;
-layout(location=4) in vec2 texcoord2;
+layout(location=1) in vec2 texcoord2;
+layout(location=2) in vec3 normal;
+layout(location=3) in vec3 worldPos;
+layout(location=4) in vec4 tangent;
+
 
 layout(location=0) out vec4 color;
 
@@ -170,12 +171,6 @@ void main(){
     vec3 b = texture( sampler2DArray(normalTexture, texSampler),
                     vec3(texcoord2,animationFrame) ).xyz;
 
-    if( doingReflections == 1 ){
-        if( dot(vec4(worldPos,1.0),reflectionPlane) < 0 ){
-            discard;
-            return;
-        }
-    }
 
     vec3 N = normal;
     N = doBumpMapping(b.xyz, N);
@@ -220,8 +215,4 @@ void main(){
     c.rgb += pow(1.0-RF,4.0) * MF * reflColor;
 
     color = c;
-    if( doingReflections == 2 )
-    {
-        color.a *= 0.85;
-    }
 }

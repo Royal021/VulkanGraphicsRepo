@@ -6,12 +6,11 @@ layout(set=0,binding=UNIFORM_BUFFER_SLOT,std140,row_major) uniform UBO{
     mat4 viewMatrix;
     mat4 viewProjMatrix;
     mat4 projMatrix;
-    mat4 reflectionMatrix;
     vec4 lightPositionAndDirectionalFlag[MAX_LIGHTS];
     vec4 lightColorAndIntensity[MAX_LIGHTS];
     vec4 cosSpotAngles[MAX_LIGHTS];
     vec4 spotDirection[MAX_LIGHTS];
-    vec4 reflectionPlane;
     vec3 eyePos;
     vec3 attenuation;
+    float tessLevel;
 };

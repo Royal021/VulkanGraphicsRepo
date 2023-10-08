@@ -7,6 +7,14 @@ using namespace math2801;
    
 void update(Globals& globs, float elapsed)
 {
+    if (globs.keys.contains(SDLK_9)) {
+        globs.tessLevel += elapsed;
+        std::cout << "Tess: " << globs.tessLevel << "\n";
+    }
+    if (globs.keys.contains(SDLK_0)) {
+        globs.tessLevel -= elapsed;
+        std::cout << "Tess: " << globs.tessLevel << "\n";
+    }
     float speed=1.0;
     if( globs.keys.contains(SDLK_LSHIFT)) speed *= 4.0f;
     if( globs.keys.contains(SDLK_w) )     globs.camera.strafeNoUpDown(0,0,speed*elapsed);
