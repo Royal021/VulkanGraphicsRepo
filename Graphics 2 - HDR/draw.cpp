@@ -92,7 +92,7 @@ void draw(Globals& globs)
     globs.framebuffer->beginRenderPassClearContents(
         cmd, 1.0f, 0.0f, 0.0f, 1.0f
     );
-    globs.blitPipe->use(cmd);
+    globs.toneMappingPipeline->use(cmd);
     
     globs.blitSquare->draw(cmd, globs.descriptorSet,
         globs.offscreen->currentImage());

@@ -45,6 +45,7 @@ struct Globals{
     GraphicsPipeline* reflectedObjectsPipeline;
     GraphicsPipeline* floorPipeline2;
     GraphicsPipeline* blitPipe;
+    GraphicsPipeline* toneMappingPipeline;
 
     Image* skyBoxImage;
     Image* Environmap;

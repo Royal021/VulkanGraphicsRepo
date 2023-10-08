@@ -112,12 +112,12 @@
     </CopyFileToFolders>
   </ItemGroup>
   <ItemGroup>
-    <None Include="shaders\blit.frag" />
-    <None Include="shaders\blit.vert" />
     <None Include="shaders\main.frag" />
     <None Include="shaders\main.vert" />
     <None Include="shaders\sky.frag" />
     <None Include="shaders\sky.vert" />
+    <None Include="shaders\tonemapping.frag" />
+    <None Include="shaders\tonemapping.vert" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="shaders\pushconstants.txt" />
