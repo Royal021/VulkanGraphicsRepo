@@ -486,14 +486,14 @@ Framebuffer::Framebuffer(bool blurrable, unsigned w, unsigned h, unsigned layers
         for (VkFramebuffer F : this->allLayersFramebuffers) {
             vkDestroyFramebuffer(ctx->dev, F, nullptr);
         }
-    for (std::vector<VkFramebuffer> L : this->singleLayerFramebuffers) {
-        for (VkFramebuffer F : L) {
-            vkDestroyFramebuffer(ctx->dev, F, nullptr);
+        for (std::vector<VkFramebuffer> L : this->singleLayerFramebuffers) {
+            for (VkFramebuffer F : L) {
+                vkDestroyFramebuffer(ctx->dev, F, nullptr);
+            }
         }
-    }
-    for (VkImageView v : this->depthBufferViews) {
-        vkDestroyImageView(ctx->dev, v, nullptr);
-    }
+        for (VkImageView v : this->depthBufferViews) {
+            vkDestroyImageView(ctx->dev, v, nullptr);
+        }
         });
 
 }
@@ -1086,7 +1086,8 @@ void Framebuffer::blur(unsigned radius, unsigned layer,
 
     this->blurHelper->endRenderPass(cmd);
 
-    this->beginOneLayerRenderPassDiscardContentsWithIndex(this->completedRenderIndex, layer, cmd);
+    //this->beginOneLayerRenderPassDiscardContentsWithIndex(this->completedRenderIndex,layer,cmd);
+    this->beginOneLayerRenderPassKeepContentsWithIndex(this->completedRenderIndex, layer, cmd);
     fbBlurPushConstants->set(cmd, "blurDelta", vec2(0.0f, 1.0f));
     //FIXME: iterations is too pessimistic
     fbBlurPushConstants->set(cmd, "blurLayerAndIterations", radius / 2 + 1);

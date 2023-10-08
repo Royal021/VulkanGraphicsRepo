@@ -11,7 +11,7 @@ public:
     VertexManager::Info drawinfo;
     BlitSquare(VertexManager* vertexManager);
     void draw(VkCommandBuffer cmd, DescriptorSet* descriptorSet, Image* img);
-
+    void drawInstanced(VkCommandBuffer cmd, unsigned numInstances);
     BlitSquare(const BlitSquare&) = delete;
     void operator=(const BlitSquare&) = delete;
 };

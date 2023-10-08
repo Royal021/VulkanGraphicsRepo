@@ -31,7 +31,7 @@ static std::map<std::string,EShLanguage> typeMap = {
     {"tesc", EShLangTessControl},
     {"tese", EShLangTessEvaluation},
     {"geom", EShLangGeometry},
-    {"comp", EShLangFragment}
+    {"comp", EShLangCompute}
 };
 static std::map<std::string, VkShaderStageFlagBits> stages = {
     { "vert", VK_SHADER_STAGE_VERTEX_BIT },

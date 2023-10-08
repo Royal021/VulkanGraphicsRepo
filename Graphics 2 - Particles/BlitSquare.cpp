@@ -59,3 +59,16 @@ void BlitSquare::draw(VkCommandBuffer cmd,
         0               //first instance
     );
 }
+
+void BlitSquare::drawInstanced(VkCommandBuffer cmd,
+    unsigned numInstances)
+{
+    vkCmdDrawIndexed(
+        cmd,
+        6,              //index count
+        numInstances,              //instance count
+        this->drawinfo.indexOffset,
+        this->drawinfo.vertexOffset,
+        0               //first instance
+    );
+}

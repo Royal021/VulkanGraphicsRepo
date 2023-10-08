@@ -17,6 +17,8 @@ void update(Globals& globs, float elapsed)
     if( globs.keys.contains(SDLK_f) )     globs.camera.strafe(0,-0.1f*speed*elapsed,0);
     if( globs.keys.contains(SDLK_q) )     globs.camera.turn(0.5f*speed*elapsed);
     if( globs.keys.contains(SDLK_e) )     globs.camera.turn(-0.5f*speed*elapsed);
+
+    globs.particleSystem->update(elapsed);
 }
 
 void handleEvents(Globals& globs)

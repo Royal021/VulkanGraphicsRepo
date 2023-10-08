@@ -1,0 +1,33 @@
+#version 450 core
+
+#extension GL_GOOGLE_include_directive : enable
+
+#include "../importantConstants.h"
+#include "particlePushConstants.txt"
+
+layout(local_size_x=WORKGROUP_SIZE,local_size_y=1,local_size_z=1) in;
+
+layout(binding=0,rgba32f) uniform imageBuffer posData;
+layout(binding=1,rgba32f) uniform imageBuffer velData;
+
+void main(){
+    uint id = gl_GlobalInvocationID.x;
+
+    vec4 pos = imageLoad( posData, int(id) );
+    vec4 vel = imageLoad( velData, int(id) );
+
+    pos.xyz = pos.xyz + elapsed*vel.xyz;
+    //-0.01 = gravity
+    //vel.xyz = vel.xyz + elapsed* vec3(0,-0.05,0);
+    pos.w -= elapsed;
+    
+    if(pos.w <= 0  )
+    {
+    pos.w = 3;
+    pos.xyz = startingPoint;
+    }
+    imageStore( posData, int(id), pos );
+    imageStore( velData, int(id), vel );
+
+   
+}

@@ -23,10 +23,6 @@ void main(){
     vec4 p = vec4(position,1.0);
     p = p * worldMatrix;
     v_worldpos = p.xyz;
-    if( doingReflections == 1 )
-    {
-        p = p * reflectionMatrix;
-    }
     p = p * viewProjMatrix;
     gl_Position = p;
     v_texcoord = texcoord;

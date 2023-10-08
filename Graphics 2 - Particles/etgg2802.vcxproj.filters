@@ -135,7 +135,16 @@
     <ClInclude Include="gltf.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="BillboardCollection.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="BlitSquare.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BatchSquare.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -254,7 +263,16 @@
     <ClCompile Include="vk.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="BillboardCollection.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="BlitSquare.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BatchSquare.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -276,10 +294,13 @@
     <None Include="shaders\sky.vert">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="shaders\blit.frag">
+    <None Include="shaders\billboard.frag">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="shaders\blit.vert">
+    <None Include="shaders\billboard.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\particle.comp">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>
@@ -288,6 +309,9 @@
       <Filter>Shaders</Filter>
     </Text>
     <Text Include="shaders\uniforms.txt">
+      <Filter>Shaders</Filter>
+    </Text>
+    <Text Include="shaders\particlePushConstants.txt">
       <Filter>Shaders</Filter>
     </Text>
   </ItemGroup>
